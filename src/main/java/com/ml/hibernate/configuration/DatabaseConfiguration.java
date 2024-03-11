@@ -1,17 +1,13 @@
 package com.ml.hibernate.configuration;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Optional;
 import java.util.Properties;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,28 +23,28 @@ public class DatabaseConfiguration {
 	private static final Logger LOG = LoggerFactory.getLogger(DatabaseConfiguration.class);
 	private static SessionFactory factory;
 
+	private DatabaseConfiguration() {
+		// private default constructor
+	}
+
 	static {
 		Properties properties = new Properties();
-		try {
-			InputStream stream = new FileInputStream("application.properties");
+		try (InputStream stream = DatabaseConfiguration.class.getClassLoader()
+				.getResourceAsStream("application.properties")) {
 			properties.load(stream);
-			Configuration configuration = new Configuration().addAnnotatedClass(Address.class)
-					.addAnnotatedClass(Department.class).addAnnotatedClass(Employee.class)
-					.addAnnotatedClass(Person.class).addAnnotatedClass(Student.class).addAnnotatedClass(Teacher.class);
-			StandardServiceRegistry ssr = new StandardServiceRegistryBuilder().applySettings(properties).build();
+			Configuration configuration = new Configuration().addPackage("com.ml.hibernate.entity")
+					.addAnnotatedClass(Address.class).addAnnotatedClass(Department.class)
+					.addAnnotatedClass(Employee.class).addAnnotatedClass(Person.class).addAnnotatedClass(Student.class)
+					.addAnnotatedClass(Teacher.class).setProperties(properties);
+			StandardServiceRegistry ssr = new StandardServiceRegistryBuilder()
+					.applySettings(configuration.getProperties()).build();
 			factory = configuration.buildSessionFactory(ssr);
 		} catch (FileNotFoundException e) {
 			LOG.error("application.properties file was not found in resource directory.");
 			e.printStackTrace();
 		} catch (Exception e) {
-			Throwable cause = e.getCause();
-			String msg = e.getMessage();
 			LOG.error("exception occured whlile configuring the database.");
-			while (cause != null) {
-				LOG.error(msg);
-				msg = cause.getMessage();
-				cause = cause.getCause();
-			}
+			DatabaseUtil.getDetailedStackTrace(e);
 		}
 
 	}

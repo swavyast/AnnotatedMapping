@@ -111,5 +111,4 @@ public class Person {
 				+ ", fatherName=" + fatherName + ", motherName=" + motherName + ", address=" + address + ", gender="
 				+ gender + "]";
 	}
-
 }

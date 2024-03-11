@@ -6,6 +6,9 @@ import java.util.Set;
 
 import org.hibernate.annotations.ManyToAny;
 
+import com.ml.hibernate.enums.Classroom;
+import com.ml.hibernate.enums.Subject;
+
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
