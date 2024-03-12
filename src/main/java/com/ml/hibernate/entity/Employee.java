@@ -10,8 +10,9 @@ import jakarta.persistence.OneToOne;
 public class Employee extends Person {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
-	private String empId;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long empId;
+	private String eType;
 	private Double basic;
 	private Double bonus;
 	private Double ta;
@@ -26,8 +27,10 @@ public class Employee extends Person {
 		// default constructor.
 	}
 
-	public Employee(Double basic, Double bonus, Double ta, Double da, Double hra, Double gross, Department dept) {
+	public Employee(String eType, Double basic, Double bonus, Double ta, Double da, Double hra, Double gross,
+			Department dept) {
 		super();
+		this.eType = eType;
 		this.basic = basic;
 		this.bonus = bonus;
 		this.ta = ta;
@@ -37,12 +40,20 @@ public class Employee extends Person {
 		this.dept = dept;
 	}
 
-	public String getEmpId() {
+	public Long getEmpId() {
 		return empId;
 	}
 
-	public void setEmpId(String empId) {
+	public void setEmpId(Long empId) {
 		this.empId = empId;
+	}
+
+	public String geteType() {
+		return eType;
+	}
+
+	public void seteType(String eType) {
+		this.eType = eType;
 	}
 
 	public Double getBasic() {
@@ -103,7 +114,8 @@ public class Employee extends Person {
 
 	@Override
 	public String toString() {
-		return "Employee [empId=" + empId + ", basic=" + basic + ", bonus=" + bonus + ", ta=" + ta + ", da=" + da
-				+ ", hra=" + hra + ", gross=" + gross + ", dept=" + dept + "]";
+		return "Employee [empId=" + empId + ", eType=" + eType + ", basic=" + basic + ", bonus=" + bonus + ", ta=" + ta
+				+ ", da=" + da + ", hra=" + hra + ", gross=" + gross + ", dept=" + dept + "]";
 	}
+
 }

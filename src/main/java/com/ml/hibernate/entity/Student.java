@@ -7,25 +7,36 @@ import com.ml.hibernate.enums.Batch;
 import com.ml.hibernate.enums.Mode;
 import com.ml.hibernate.enums.Subject;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapKeyEnumerated;
+import jakarta.persistence.MapKeyJoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+@Entity
 @Table(name = "stud")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Student extends Person {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
-	private String studentId;
-	@OneToMany
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long studentId;
+	@ElementCollection
+	@CollectionTable(name = "subjects", joinColumns = @JoinColumn(name = "sId", referencedColumnName = "studentId"))
 	@MapKeyEnumerated
 	private Set<Subject> subjects;
-	@OneToMany
-	@MapKeyEnumerated
+	@ElementCollection
+	@CollectionTable(name = "tutors", joinColumns = @JoinColumn(name = "sId", referencedColumnName = "studentId"))
+	@MapKeyJoinColumn
 	private Map<Teacher, Subject> tutors;
 	@Column(name = "rCard")
 	private String reportCard;
@@ -41,7 +52,8 @@ public class Student extends Person {
 	private Boolean feeCheck;
 	private Boolean scholarshipEligible;
 	private Boolean hasLibraryCard;
-	@OneToMany
+	@ElementCollection
+	@CollectionTable(name = "mode", joinColumns = @JoinColumn(name = "sId", referencedColumnName = "studentId"))
 	@MapKeyEnumerated
 	private Map<Mode, Batch> mode;
 
@@ -49,11 +61,10 @@ public class Student extends Person {
 		// default constructor
 	}
 
-	public Student(String studentId, Set<Subject> subjects, Map<Teacher, Subject> tutors, String reportCard,
-			String libraryCard, Double feePaid, Double balance, Double rembursement, Double scholarshipAmount,
-			Boolean feeCheck, Boolean scholarshipEligible, Boolean hasLibraryCard, Map<Mode, Batch> mode) {
+	public Student(Set<Subject> subjects, Map<Teacher, Subject> tutors, String reportCard, String libraryCard,
+			Double feePaid, Double balance, Double rembursement, Double scholarshipAmount, Boolean feeCheck,
+			Boolean scholarshipEligible, Boolean hasLibraryCard, Map<Mode, Batch> mode) {
 		super();
-		this.studentId = studentId;
 		this.subjects = subjects;
 		this.tutors = tutors;
 		this.reportCard = reportCard;
@@ -68,11 +79,11 @@ public class Student extends Person {
 		this.mode = mode;
 	}
 
-	public String getStudentId() {
+	public Long getstudentId() {
 		return studentId;
 	}
 
-	public void setStudentId(String studentId) {
+	public void setstudentId(Long studentId) {
 		this.studentId = studentId;
 	}
 

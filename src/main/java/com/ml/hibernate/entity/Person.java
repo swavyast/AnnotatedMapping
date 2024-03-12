@@ -1,27 +1,41 @@
 package com.ml.hibernate.entity;
 
+import java.util.Set;
+
 import com.ml.hibernate.enums.Gender;
 
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+@Entity
 @Table
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Person {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
-	private String personId;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long personId;
 	private String name;
-	private String email;
-	private String phone;
+	@ElementCollection
+	@CollectionTable(name = "emails", joinColumns = @JoinColumn(name = "pId", referencedColumnName = "personId"))
+	private Set<String> email;
+	@ElementCollection
+	@CollectionTable(name = "phones", joinColumns = @JoinColumn(name = "pId", referencedColumnName = "personId"))
+	private Set<String> phone;
 	private String fatherName;
 	private String motherName;
 	@OneToMany
-	private Address address;
+	private Set<Address> address;
 	@Enumerated
 	private Gender gender;
 
@@ -29,9 +43,10 @@ public class Person {
 		// default constructor
 	}
 
-	public Person(String name, String email, String phone, String fatherName, String motherName, Address address,
-			Gender gender) {
+	public Person(Long personId, String name, Set<String> email, Set<String> phone, String fatherName,
+			String motherName, Set<Address> address, Gender gender) {
 		super();
+		this.personId = personId;
 		this.name = name;
 		this.email = email;
 		this.phone = phone;
@@ -41,11 +56,11 @@ public class Person {
 		this.gender = gender;
 	}
 
-	public String getPersonId() {
+	public Long getPersonId() {
 		return personId;
 	}
 
-	public void setPersonId(String personId) {
+	public void setPersonId(Long personId) {
 		this.personId = personId;
 	}
 
@@ -57,19 +72,19 @@ public class Person {
 		this.name = name;
 	}
 
-	public String getEmail() {
+	public Set<String> getEmail() {
 		return email;
 	}
 
-	public void setEmail(String email) {
+	public void setEmail(Set<String> email) {
 		this.email = email;
 	}
 
-	public String getPhone() {
+	public Set<String> getPhone() {
 		return phone;
 	}
 
-	public void setPhone(String phone) {
+	public void setPhone(Set<String> phone) {
 		this.phone = phone;
 	}
 
@@ -89,11 +104,11 @@ public class Person {
 		this.motherName = motherName;
 	}
 
-	public Address getAddress() {
+	public Set<Address> getAddress() {
 		return address;
 	}
 
-	public void setAddress(Address address) {
+	public void setAddress(Set<Address> address) {
 		this.address = address;
 	}
 
@@ -105,10 +120,4 @@ public class Person {
 		this.gender = gender;
 	}
 
-	@Override
-	public String toString() {
-		return "Person [personId=" + personId + ", name=" + name + ", email=" + email + ", phone=" + phone
-				+ ", fatherName=" + fatherName + ", motherName=" + motherName + ", address=" + address + ", gender="
-				+ gender + "]";
-	}
 }

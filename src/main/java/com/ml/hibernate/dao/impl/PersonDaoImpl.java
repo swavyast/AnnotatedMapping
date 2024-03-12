@@ -19,22 +19,26 @@ public class PersonDaoImpl implements PersonDao {
 	private Transaction tx;
 
 	@Override
-	public void savePerson(Person person) {
+	public void savePerson(Person person) throws Exception {
 
 		try {
-			session = FACTORY.getCurrentSession();
-			tx = session.beginTransaction();
-			tx.begin();
 			if (person != null) {
+				session = FACTORY.getCurrentSession();
+				if (tx == null || !tx.isActive()) {
+					tx = session.beginTransaction();
+				} else {
+					tx = session.getTransaction();
+				}
 				LOG.info("saving person instance...");
-				new PersonDaoImpl().savePerson(person);
+				session.persist(person);
+				tx.commit();
 			}
-			tx.commit();
 		} catch (Exception e) {
 			if (tx != null && !tx.isActive())
 				tx.rollback();
 			LOG.error("exception occurred while saving the student instance");
 			DatabaseUtil.getDetailedStackTrace(e);
+			throw new Exception("exception just for the purpose of providing a stack trace", e);
 		} finally {
 			if (session != null && session.isOpen())
 				session.close();
@@ -56,7 +60,7 @@ public class PersonDaoImpl implements PersonDao {
 			return false;
 	}
 
-	public static <T extends Person> void savePersonalDetails(T t) {
+	public static <T extends Person> void savePersonalDetails(T t) throws Exception {
 		if (PersonDaoImpl.isValidPerson(t)) {
 			try {
 				Person p = new Person(t.getName(), t.getEmail(), t.getEmail(), t.getFatherName(), t.getMotherName(),

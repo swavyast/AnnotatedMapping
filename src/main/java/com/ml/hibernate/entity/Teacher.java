@@ -4,53 +4,57 @@ import java.time.LocalTime;
 import java.util.Map;
 import java.util.Set;
 
-import org.hibernate.annotations.ManyToAny;
-
 import com.ml.hibernate.enums.Classroom;
 import com.ml.hibernate.enums.Subject;
 
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapKeyEnumerated;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
+@Entity
 @Table
 public class Teacher extends Employee {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
-	private String tid;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long teacherId;
 	@OneToOne
 	private Department dept;
-	@OneToOne
+	@ManyToOne
 	private Employee manager;
 	@OneToMany
+	@CollectionTable
 	private Set<Teacher> colleagues;
-	@ManyToAny
+	@CollectionTable
+	@MapKeyEnumerated
 	private Map<Subject, Map<Classroom, LocalTime>> schedule;
 
 	public Teacher() {
 		// default constructor
 	}
 
-	public Teacher(String tid, Department dept, Employee manager, Set<Teacher> colleagues,
+	public Teacher(Department dept, Employee manager, Set<Teacher> colleagues,
 			Map<Subject, Map<Classroom, LocalTime>> schedule) {
 		super();
-		this.tid = tid;
 		this.dept = dept;
 		this.manager = manager;
 		this.colleagues = colleagues;
 		this.schedule = schedule;
 	}
 
-	public String getTid() {
-		return tid;
+	public Long getteacherId() {
+		return teacherId;
 	}
 
-	public void setTid(String tid) {
-		this.tid = tid;
+	public void setteacherId(Long teacherId) {
+		this.teacherId = teacherId;
 	}
 
 	public Department getDept() {
@@ -87,8 +91,8 @@ public class Teacher extends Employee {
 
 	@Override
 	public String toString() {
-		return "Teacher [tid=" + tid + ", dept=" + dept + ", manager=" + manager + ", colleagues=" + colleagues
-				+ ", schedule=" + schedule + "]";
+		return "Teacher [teacherId=" + teacherId + ", dept=" + dept + ", manager=" + manager + ", colleagues="
+				+ colleagues + ", schedule=" + schedule + "]";
 	}
 
 }

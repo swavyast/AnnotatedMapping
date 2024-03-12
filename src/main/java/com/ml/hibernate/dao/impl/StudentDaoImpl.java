@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ml.hibernate.configuration.DatabaseConfiguration;
+import com.ml.hibernate.configuration.DatabaseUtil;
 import com.ml.hibernate.dao.StudentDao;
 import com.ml.hibernate.entity.Student;
 
@@ -22,20 +23,27 @@ public class StudentDaoImpl implements StudentDao {
 	private Transaction tx;
 
 	@Override
-	public void saveStudent(Student student) {
+	public void saveStudent(Student student) throws Exception {
 
 		try {
-
-			PersonDaoImpl.savePersonalDetails(student);
-			session = FACTORY.getCurrentSession();
-			tx = session.beginTransaction();
-			if (student != null)
-				new StudentDaoImpl().saveStudent(student);
-			tx.commit();
+			if (student != null) {
+				PersonDaoImpl.savePersonalDetails(student);
+				session = FACTORY.getCurrentSession();
+				if (tx == null || !tx.isActive()) {
+					tx = session.beginTransaction();
+				} else {
+					tx = session.getTransaction();
+				}
+				session.persist(student);
+				tx.commit();
+			}
 
 		} catch (Exception e) {
 			if (tx != null && !tx.isActive())
-				LOG.error("exception occurred while saving student instance.");
+				tx.rollback();
+			LOG.error("exception occurred while saving student instance.");
+			DatabaseUtil.getDetailedStackTrace(e);
+			throw new Exception("exception just for the purpose of providing a stack trace", e);
 		} finally {
 			if (session != null && session.isOpen())
 				session.close();
@@ -60,7 +68,7 @@ public class StudentDaoImpl implements StudentDao {
 			return File.createTempFile(string, ".docx");
 		} catch (IOException e) {
 			LOG.error(String.format("exception occurred while generating report card for %s", string));
-
+			DatabaseUtil.getDetailedStackTrace(e);
 			return File.class.newInstance();
 		}
 	}

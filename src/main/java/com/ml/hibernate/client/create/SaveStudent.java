@@ -1,7 +1,5 @@
 package com.ml.hibernate.client.create;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,8 +23,7 @@ public class SaveStudent {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SaveStudent.class);
 
-	@SuppressWarnings("unchecked")
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 
 		Student student0 = new Student();
 		// personal details

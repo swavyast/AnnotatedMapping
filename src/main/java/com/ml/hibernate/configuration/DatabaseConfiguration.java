@@ -30,7 +30,7 @@ public class DatabaseConfiguration {
 	static {
 		Properties properties = new Properties();
 		try (InputStream stream = DatabaseConfiguration.class.getClassLoader()
-				.getResourceAsStream("application.properties")) {
+				.getResourceAsStream("hibernate.properties")) {
 			properties.load(stream);
 			Configuration configuration = new Configuration().addPackage("com.ml.hibernate.entity")
 					.addAnnotatedClass(Address.class).addAnnotatedClass(Department.class)
@@ -41,7 +41,7 @@ public class DatabaseConfiguration {
 			factory = configuration.buildSessionFactory(ssr);
 		} catch (FileNotFoundException e) {
 			LOG.error("application.properties file was not found in resource directory.");
-			e.printStackTrace();
+			DatabaseUtil.getDetailedStackTrace(e);
 		} catch (Exception e) {
 			LOG.error("exception occured whlile configuring the database.");
 			DatabaseUtil.getDetailedStackTrace(e);

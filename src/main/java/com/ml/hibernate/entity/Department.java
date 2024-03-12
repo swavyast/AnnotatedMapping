@@ -1,10 +1,13 @@
 package com.ml.hibernate.entity;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 
 public class Department {
 
-	private String deptId;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long deptId;
 	private String name;
 	private Employee head;
 	private Double budget;
@@ -32,11 +35,11 @@ public class Department {
 		this.aminitiesCost = aminitiesCost;
 	}
 
-	public String getDeptId() {
+	public Long getDeptId() {
 		return deptId;
 	}
 
-	public void setDeptId(String deptId) {
+	public void setDeptId(Long deptId) {
 		this.deptId = deptId;
 	}
 

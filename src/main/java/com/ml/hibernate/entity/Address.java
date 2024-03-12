@@ -1,16 +1,18 @@
 package com.ml.hibernate.entity;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+@Entity
 @Table
 public class Address {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
-	private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long addressId;
 	private String line1;
 	private String line2;
 	private String line3;
@@ -35,12 +37,12 @@ public class Address {
 		this.pincode = pincode;
 	}
 
-	public String getId() {
-		return id;
+	public Long getaddressId() {
+		return addressId;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setaddressId(Long addressId) {
+		this.addressId = addressId;
 	}
 
 	public String getLine1() {
@@ -101,7 +103,7 @@ public class Address {
 
 	@Override
 	public String toString() {
-		return "Address [id=" + id + ", line1=" + line1 + ", line2=" + line2 + ", line3=" + line3 + ", city=" + city
+		return "Address [addressId=" + addressId + ", line1=" + line1 + ", line2=" + line2 + ", line3=" + line3 + ", city=" + city
 				+ ", state=" + state + ", country=" + country + ", pincode=" + pincode + "]";
 	}
 
